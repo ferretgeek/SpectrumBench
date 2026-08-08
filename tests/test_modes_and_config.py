@@ -59,7 +59,7 @@ class ModesAndConfigTests(unittest.TestCase):
     def test_legacy_high_concurrency_and_prompts_are_ignored(self) -> None:
         config = _build_config(
             {
-                "api_key": "test",
+                "api_key": PUBLIC_EXAMPLE_VALUE,
                 "base_url": "http://127.0.0.1:8317/v1",
                 "model": "gpt-5.5",
                 "test_mode": MODE_CODEX,
@@ -179,7 +179,7 @@ class ModesAndConfigTests(unittest.TestCase):
     def test_gpt_56_pricing_requires_cache_write_details(self) -> None:
         config = _build_config(
             {
-                "api_key": "test",
+                "api_key": PUBLIC_EXAMPLE_VALUE,
                 "base_url": "http://127.0.0.1:8317/v1",
                 "model": "gpt-5.6",
                 "test_mode": MODE_CODEX,
