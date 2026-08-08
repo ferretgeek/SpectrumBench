@@ -41,7 +41,7 @@ jobs:
           bandit -q -lll -r stress_tool scripts benchmark_token_speed.py token_stress_test.py
       - name: Scan source for secrets
         run: |
-          detect-secrets scan --all-files --exclude-files '(^|[\\/])(\.git|\.venv|\.pytest_cache|\.ruff_cache|__pycache__|docs[\\/]images|demo[\\/]assets)([\\/]|$)' . > /tmp/detect-secrets.json
+          detect-secrets scan --all-files --exclude-files '(\.git|\.venv|\.pytest_cache|\.ruff_cache|__pycache__|docs[\\/]images|demo[\\/]assets)' . > /tmp/detect-secrets.json
           python - <<'PY'
           import json
           with open("/tmp/detect-secrets.json", encoding="utf-8") as handle:

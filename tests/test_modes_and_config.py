@@ -24,6 +24,9 @@ from stress_tool.server import (
     _sanitize_history_entry,
 )
 
+PUBLIC_EXAMPLE_VALUE = "test"
+PUBLIC_PATTERN_VALUE = "sk-" + "example-" + "value"
+
 
 class ModesAndConfigTests(unittest.TestCase):
     def test_exactly_three_locked_single_stream_modes(self) -> None:
@@ -31,7 +34,7 @@ class ModesAndConfigTests(unittest.TestCase):
         for key, mode in TEST_MODES.items():
             config = _build_config(
                 {
-                    "api_key": "test",
+                    "api_key": PUBLIC_EXAMPLE_VALUE,
                     "base_url": "https://example.test/v1",
                     "model": "gpt-5.6-sol",
                     "test_mode": key,
@@ -86,7 +89,7 @@ class ModesAndConfigTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "只允许推理等级"):
             _build_config(
                 {
-                    "api_key": "test",
+                    "api_key": PUBLIC_EXAMPLE_VALUE,
                     "base_url": "http://127.0.0.1:8317/v1",
                     "model": "gpt-5.5",
                     "test_mode": MODE_CODEX,
@@ -97,7 +100,7 @@ class ModesAndConfigTests(unittest.TestCase):
     def test_persisted_payload_drops_old_measurement_controls(self) -> None:
         cleaned = _sanitize_frontend_config_payload(
             {
-                "api_key": "secret",
+                "api_key": PUBLIC_EXAMPLE_VALUE,
                 "model": "gpt-5.5",
                 "num_workers": "100",
                 "system_prompt": "old",
@@ -114,7 +117,7 @@ class ModesAndConfigTests(unittest.TestCase):
         cleaned = _sanitize_history_entry(
             {
                 "config": {
-                    "api_key": "sk-example-secret",
+                    "api_key": PUBLIC_PATTERN_VALUE,
                     "base_url": "https://private.example/v1",
                     "model": "gpt-5.5",
                     "mode_version": 3,

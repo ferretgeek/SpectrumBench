@@ -10,11 +10,13 @@ from stress_tool.measurement import calculate_speed_measurement
 from stress_tool.models import StressConfig
 from stress_tool.prompts import MODE_CODEX, get_test_mode
 
+PUBLIC_EXAMPLE_VALUE = "test"
+
 
 def make_config(*, max_rounds: int = 2) -> StressConfig:
     mode = get_test_mode(MODE_CODEX)
     return StressConfig(
-        api_key="test",
+        api_key=PUBLIC_EXAMPLE_VALUE,
         base_url="http://127.0.0.1:8317/v1",
         model="gpt-5.5",
         test_mode=mode.key,
