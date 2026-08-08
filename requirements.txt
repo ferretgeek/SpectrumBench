@@ -1,0 +1,5 @@
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+openai==2.53.0
+websockets==16.1.1
+tiktoken==0.13.0

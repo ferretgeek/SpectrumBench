@@ -1,0 +1,67 @@
+{
+  "description": "标准服务层、输入不超过 272K token 的 API 等效单价，单位为美元/百万 token。用于统一换算，不代表 Codex 套餐实际按 token 或美元结算。超长上下文、Batch、Flex、Priority 与区域处理不套用此表。",
+  "source": "https://developers.openai.com/api/docs/pricing",
+  "updated_at": "2026-08-09",
+  "default_model": "gpt-5.6-sol",
+  "aliases": {
+    "gpt-5.6": "gpt-5.6-sol"
+  },
+  "models": {
+    "gpt-5.6-sol": {
+      "input": 5.0,
+      "cached_input": 0.5,
+      "cache_write": 6.25,
+      "output": 30.0,
+      "updated_at": "2026-08-09",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    },
+    "gpt-5.6-terra": {
+      "input": 2.0,
+      "cached_input": 0.2,
+      "cache_write": 2.5,
+      "output": 12.0,
+      "updated_at": "2026-08-09",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+    },
+    "gpt-5.6-luna": {
+      "input": 0.2,
+      "cached_input": 0.02,
+      "cache_write": 0.25,
+      "output": 1.2,
+      "updated_at": "2026-08-09",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    },
+    "gpt-5.5": {
+      "input": 5.0,
+      "cached_input": 0.5,
+      "cache_write": 5.0,
+      "output": 30.0,
+      "updated_at": "2026-07-14",
+      "source": "https://developers.openai.com/api/docs/pricing"
+    },
+    "gpt-5.4": {
+      "input": 2.5,
+      "cached_input": 0.25,
+      "cache_write": 2.5,
+      "output": 15.0,
+      "updated_at": "2026-07-14",
+      "source": "https://developers.openai.com/api/docs/pricing"
+    },
+    "gpt-5.4-mini": {
+      "input": 0.75,
+      "cached_input": 0.075,
+      "cache_write": 0.75,
+      "output": 4.5,
+      "updated_at": "2026-07-14",
+      "source": "https://developers.openai.com/api/docs/pricing"
+    },
+    "gpt-5.4-nano": {
+      "input": 0.2,
+      "cached_input": 0.02,
+      "cache_write": 0.2,
+      "output": 1.25,
+      "updated_at": "2026-07-14",
+      "source": "https://developers.openai.com/api/docs/pricing"
+    }
+  }
+}

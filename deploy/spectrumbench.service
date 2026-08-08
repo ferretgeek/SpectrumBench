@@ -1,0 +1,31 @@
+[Unit]
+Description=SpectrumBench local-first token benchmark dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=spectrumbench
+Group=spectrumbench
+WorkingDirectory=/opt/spectrumbench
+Environment=PYTHONUNBUFFERED=1
+Environment=SPECTRUMBENCH_DATA_DIR=/var/lib/spectrumbench
+Environment=SPECTRUMBENCH_ALLOWED_HOSTS=127.0.0.1,localhost,::1
+ExecStart=/opt/spectrumbench/.venv/bin/python /opt/spectrumbench/token_stress_test.py --no-browser
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/spectrumbench
+
+[Install]
+WantedBy=multi-user.target

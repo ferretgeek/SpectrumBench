@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN" data-color="light" data-palette="iris">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f6ff">
+  <meta name="description" content="SpectrumBench · 光谱测速台无网络交互预览">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+  <title>SpectrumBench · 光谱测速台</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="https://github.com/ferretgeek/SpectrumBench" aria-label="SpectrumBench GitHub repository">
+      <img src="assets/favicon-32.png" alt="">
+      <span><b>SpectrumBench</b><small>光谱测速台</small></span>
+    </a>
+    <div class="themes">
+      <label><span>浅色配色</span><select id="palette"><option value="iris">鸢尾</option><option value="jade">青玉</option><option value="sunrise">晨曦</option></select></label>
+      <button id="theme" type="button" aria-label="切换为暗色模式">暗色</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="copy">
+        <div class="eyebrow"><i></i> LOCAL-FIRST · AUDITABLE</div>
+        <h1>把每一次输出，<br><em>还原成证据。</em></h1>
+        <p>固定场景、精确 usage 与可复核样本，让速度、等待和额度回到同一把尺上。</p>
+        <div class="actions"><a class="primary" href="https://github.com/ferretgeek/SpectrumBench">查看项目</a><a href="https://github.com/ferretgeek/SpectrumBench#简体中文">部署教程</a></div>
+        <div class="notice"><strong>无网络演示</strong><span>本页使用合成读数，不读取 Key，也不调用任何 API。</span></div>
+      </div>
+      <div class="preview"><img src="assets/dashboard.png" alt="SpectrumBench 实际界面预览"></div>
+    </section>
+
+    <section class="lab" aria-labelledby="labTitle">
+      <div class="section-head"><div><span>METHOD SELECTOR</span><h2 id="labTitle">三种场景，一套严谨口径</h2></div><p id="methodText">六轮真实结对编程对话，观察上下文增长与自然缓存。</p></div>
+      <div class="modes" role="group" aria-label="选择演示场景">
+        <button type="button" data-mode="uncached"><b>01</b><span>无缓存极限<small>理论边界</small></span></button>
+        <button class="active" type="button" data-mode="daily"><b>02</b><span>日常连续对话<small>推荐基线</small></span></button>
+        <button type="button" data-mode="codex"><b>03</b><span>Codex 高缓存<small>稳定复用</small></span></button>
+      </div>
+      <div class="metrics" aria-live="polite">
+        <article><span>可见速度</span><strong id="speed">54.8</strong><small>tok/s · 合成中位数</small></article>
+        <article><span>首字延迟</span><strong id="ttft">1.21</strong><small>秒 · 合成 P50</small></article>
+        <article><span>缓存读取</span><strong id="cache">68%</strong><small>完整 usage 口径</small></article>
+        <article><span>质量门禁</span><strong class="quality">通过</strong><small>样本稳定 · 明细完整</small></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Preview only · No live API calls</span><a href="https://github.com/ferretgeek/SpectrumBench">MIT · ferretgeek</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>
