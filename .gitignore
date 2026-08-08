@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Credentials and local endpoint configuration
+.env
+.env.*
+!.env.docker.example
+*.pem
+*.key
+*.p12
+*.pfx
+*secret*
+*credential*
+密钥*
+[0-9].txt
+*.local.txt
+
+# Runtime state and generated output
+/stress_state.json
+/stress_profiles.json
+/logs/
+/benchmark_results/
+/.token_benchmark_stop_requested
+/release-assets/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

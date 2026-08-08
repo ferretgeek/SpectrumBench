@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SpectrumBench">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5558f7"/>
+      <stop offset=".52" stop-color="#835cf6"/>
+      <stop offset="1" stop-color="#ef5579"/>
+    </linearGradient>
+    <linearGradient id="line" x1="12" y1="32" x2="52" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#85f0ff"/>
+      <stop offset=".5" stop-color="#fff"/>
+      <stop offset="1" stop-color="#ffe4a6"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#bg)"/>
+  <path d="M12 37h8l4-15 7 26 6-21 4 10h11" fill="none" stroke="url(#line)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="51" cy="37" r="3" fill="#fff"/>
+</svg>

@@ -1,0 +1,23 @@
+name: spectrumbench
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      SPECTRUMBENCH_DATA_DIR: /data
+      SPECTRUMBENCH_ALLOWED_HOSTS: ${SPECTRUMBENCH_ALLOWED_HOSTS:-127.0.0.1,localhost,::1}
+    ports:
+      - "127.0.0.1:${SPECTRUMBENCH_PORT:-18976}:18976"
+    volumes:
+      - spectrumbench-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  spectrumbench-data:
