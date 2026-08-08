@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    ignore:
+      # websockets 17 requires Python 3.11; SpectrumBench still supports 3.10.
+      - dependency-name: websockets
+        update-types:
+          - version-update:semver-major
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
