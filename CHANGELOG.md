@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 — 2026-08-09
+
+- Reissued the release from a fully rewritten, two-engine-clean public history after a test function name matched a third-party credential pattern.
+- Retired the immutable `v1.0.0` tag and moved the supported release to `v1.0.1`; no real secret or personal information was involved.
+- Includes the fixed report identifier boundary, same-origin download validation, safer filenames, UI polish, packaging, and documentation updates from the final audit.
+
 ## 1.0.0 — 2026-08-09
 
 - 首个公开版本：三种固定单流测量模式、实时看板、历史、逐请求明细与一次性 JSON 报告。
