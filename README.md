@@ -2,7 +2,7 @@
 
 ![SpectrumBench social preview](docs/images/social-preview.png)
 
-# SpectrumBench · 光谱测速台
+# 光谱测速台 / SpectrumBench — Responses API 测速与用量
 
 把速度、等待与额度，变成可复核的证据。  
 Turn speed, latency, and token usage into evidence you can audit.
