@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- 将 Starlette 测试客户端依赖从 `httpx2 2.9.1` 更新到 `2.10.0`，保持测试路径使用受维护的 HTTPX2 实现并消除回退到旧 `httpx` 时的弃用告警。
+- Updated the Starlette test-client dependency from `httpx2 2.9.1` to `2.10.0`, keeping tests on the maintained HTTPX2 path and avoiding the deprecation warning produced by an old-HTTPX fallback environment.
+
 ## 1.0.1 — 2026-08-09
 
 - Reissued the release from a fully rewritten, two-engine-clean public history after a test function name matched a third-party credential pattern.
