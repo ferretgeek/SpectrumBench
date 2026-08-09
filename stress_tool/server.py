@@ -430,7 +430,7 @@ async def _handle_message(ws: WebSocket, msg: dict) -> None:
             "report_ready",
             {
                 "filename": f"stress_report_{stamp}.json",
-                "url": f"/download-report/{report_id}",
+                "report_id": report_id,
             },
         )
 

@@ -2126,8 +2126,13 @@
     }
 
     function downloadReport(d) {
-      if (!d.url) return;
-      const link = document.createElement('a'); link.href = d.url; link.download = d.filename || 'token-report.json';
+      const reportId = String(d.report_id || '');
+      if (!/^[0-9a-f]{32}$/.test(reportId)) { toast('报告下载地址无效', 'error'); return; }
+      const filename = /^stress_report_\d{8}_\d{6}\.json$/.test(String(d.filename || ''))
+        ? String(d.filename) : 'stress-report.json';
+      const link = document.createElement('a');
+      link.href = new URL(`/download-report/${reportId}`, window.location.origin).href;
+      link.download = filename;
       document.body.appendChild(link); link.click(); link.remove(); toast('报告已生成');
     }
 
