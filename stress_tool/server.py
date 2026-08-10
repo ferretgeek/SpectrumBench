@@ -592,11 +592,7 @@ def _websocket_origin_allowed(ws: WebSocket) -> bool:
 
 
 def _websocket_session_allowed(ws: WebSocket) -> bool:
-    offered = {
-        item.strip()
-        for item in (ws.headers.get("sec-websocket-protocol") or "").split(",")
-        if item.strip()
-    }
+    offered = {item.strip() for item in (ws.headers.get("sec-websocket-protocol") or "").split(",") if item.strip()}
     supplied = next((item[8:] for item in offered if item.startswith("session.")), "")
     return "spectrumbench" in offered and secrets.compare_digest(supplied, SESSION_TOKEN)
 
@@ -785,8 +781,7 @@ def _capture_engine_result(
     return {
         "stats": current_engine.get_stats_snapshot(),
         "rounds": [
-            {key: value for key, value in record.items() if key != "preview"}
-            for record in current_engine.get_records()
+            {key: value for key, value in record.items() if key != "preview"} for record in current_engine.get_records()
         ],
         "meta": current_engine.get_report_meta(),
         "config": _config_to_frontend_payload(current_config) if current_config else None,

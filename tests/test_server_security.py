@@ -30,9 +30,7 @@ class ServerSecurityTests(unittest.TestCase):
         self.assertFalse(server._websocket_origin_allowed(_FakeWebSocket("https://attacker.example")))
         self.assertTrue(server._websocket_session_allowed(_FakeWebSocket("http://127.0.0.1:18976")))
         self.assertFalse(
-            server._websocket_session_allowed(
-                _FakeWebSocket("http://127.0.0.1:18976", token="wrong-token")
-            )
+            server._websocket_session_allowed(_FakeWebSocket("http://127.0.0.1:18976", token="wrong-token"))
         )
 
     def test_security_headers_and_health_marker(self) -> None:
