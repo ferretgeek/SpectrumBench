@@ -10,6 +10,7 @@ import threading
 import time
 import webbrowser
 from typing import Any
+from urllib.parse import quote
 
 
 def _configure_stdio() -> None:
@@ -43,10 +44,13 @@ def _wait_and_open(server: Any, host: str, port: int, open_browser: bool) -> Non
     while time.time() < deadline:
         if getattr(server, "started", False):
             access_host = "127.0.0.1" if host == "0.0.0.0" else host
+            from stress_tool.server import SESSION_TOKEN
+
+            access_url = f"http://{access_host}:{port}/#session={quote(SESSION_TOKEN, safe='')}"
             print("\n  SpectrumBench · 光谱测速台已启动")
-            print(f"  访问地址: http://{access_host}:{port}\n")
+            print(f"  访问地址（含本次会话令牌，请勿转发）: {access_url}\n")
             if open_browser:
-                webbrowser.open(f"http://{access_host}:{port}")
+                webbrowser.open(access_url)
             return
         time.sleep(0.1)
 

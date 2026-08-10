@@ -1588,6 +1588,9 @@
       snapshotNotice: $('snapshotNotice'), snapshotText: $('snapshotText'), liveViewBtn: $('liveViewBtn'),
     };
 
+    const sessionToken = new URLSearchParams(location.hash.slice(1)).get('session') || '';
+    if (sessionToken) history.replaceState(null, '', location.pathname + location.search);
+
     const S = {
       ws: null, reconnectTimer: null, modes: {}, defaultMode: 'daily-dialogue', mode: 'daily-dialogue',
       pricing: {models: {}}, connected: false, running: false, stopping: false, queryingModels: false, hasResult: false,
@@ -1600,8 +1603,15 @@
       S.connected = false;
       updateButtons();
       setStatus('正在连接本地服务', 'warning');
+      if (!sessionToken) {
+        setStatus('缺少本机会话令牌 · 请从启动器输出的地址进入', 'error');
+        return;
+      }
       const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-      S.ws = new WebSocket(protocol + '://' + location.host + '/ws');
+      S.ws = new WebSocket(
+        protocol + '://' + location.host + '/ws',
+        ['spectrumbench', 'session.' + sessionToken],
+      );
       S.ws.onopen = () => {
         S.connected = true;
         updateButtons();

@@ -130,6 +130,13 @@ class ModesAndConfigTests(unittest.TestCase):
         self.assertNotIn("base_url", cleaned["config"])
         self.assertEqual(cleaned["config"]["mode_version"], 3)
 
+        history = _sanitize_history_entry(
+            {"config": {}, "round_previews": [{"preview": "private output", "total_tokens": 2}]}
+        )
+        assert history is not None
+        self.assertNotIn("preview", history["round_previews"][0])
+        self.assertEqual("", BenchmarkEngine._preview("model echoed a credential"))
+
         embedded_url = "".join(("https", "://", "user:password", "@", "example.test/v1?api_key=query-secret"))
         safe = _safe_error_text(RuntimeError(f"Bearer private-token sk-example-secret proj_example {embedded_url}"))
         self.assertNotIn("private-token", safe)
@@ -137,6 +144,7 @@ class ModesAndConfigTests(unittest.TestCase):
         self.assertNotIn("proj_example", safe)
         self.assertNotIn("password", safe)
         self.assertNotIn("query-secret", safe)
+        self.assertNotIn("\n", _safe_error_text(RuntimeError("forged\nlog line\rsecret")))
 
         exact_key = "opaque-private-value"
         exact_url = "https://private-host.example/v1"

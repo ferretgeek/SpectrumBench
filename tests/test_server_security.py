@@ -10,8 +10,12 @@ from stress_tool import server
 
 
 class _FakeWebSocket:
-    def __init__(self, origin: str, host: str = "127.0.0.1:18976") -> None:
-        self.headers = {"origin": origin, "host": host}
+    def __init__(self, origin: str, host: str = "127.0.0.1:18976", token: str = "") -> None:
+        self.headers = {
+            "origin": origin,
+            "host": host,
+            "sec-websocket-protocol": f"spectrumbench, session.{token or server.SESSION_TOKEN}",
+        }
 
 
 class ServerSecurityTests(unittest.TestCase):
@@ -24,6 +28,12 @@ class ServerSecurityTests(unittest.TestCase):
     def test_same_origin_websocket_policy(self) -> None:
         self.assertTrue(server._websocket_origin_allowed(_FakeWebSocket("http://127.0.0.1:18976")))
         self.assertFalse(server._websocket_origin_allowed(_FakeWebSocket("https://attacker.example")))
+        self.assertTrue(server._websocket_session_allowed(_FakeWebSocket("http://127.0.0.1:18976")))
+        self.assertFalse(
+            server._websocket_session_allowed(
+                _FakeWebSocket("http://127.0.0.1:18976", token="wrong-token")
+            )
+        )
 
     def test_security_headers_and_health_marker(self) -> None:
         client = TestClient(server.app, base_url="http://testserver")
@@ -41,7 +51,12 @@ class ServerSecurityTests(unittest.TestCase):
 
     def test_websocket_accepts_same_origin_and_rejects_cross_origin(self) -> None:
         client = TestClient(server.app, base_url="http://testserver")
-        with client.websocket_connect("/ws", headers={"origin": "http://testserver"}) as socket:
+        protocols = ["spectrumbench", f"session.{server.SESSION_TOKEN}"]
+        with client.websocket_connect(
+            "/ws",
+            headers={"origin": "http://testserver"},
+            subprotocols=protocols,
+        ) as socket:
             message = socket.receive_json()
             self.assertEqual(message["type"], "init")
             self.assertNotIn("api_key", message["data"].get("startup_draft") or {})
@@ -51,10 +66,17 @@ class ServerSecurityTests(unittest.TestCase):
             client.websocket_connect(
                 "/ws",
                 headers={"origin": "https://attacker.example"},
+                subprotocols=protocols,
             ),
         ):
             pass
         self.assertEqual(rejected.exception.code, 1008)
+        with (
+            self.assertRaises(WebSocketDisconnect) as unauthenticated,
+            client.websocket_connect("/ws", headers={"origin": "http://testserver"}),
+        ):
+            pass
+        self.assertEqual(unauthenticated.exception.code, 1008)
 
     def test_report_download_is_one_time_and_not_cached(self) -> None:
         server._report_exports["once"] = {

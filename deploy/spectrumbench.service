@@ -11,6 +11,8 @@ WorkingDirectory=/opt/spectrumbench
 Environment=PYTHONUNBUFFERED=1
 Environment=SPECTRUMBENCH_DATA_DIR=/var/lib/spectrumbench
 Environment=SPECTRUMBENCH_ALLOWED_HOSTS=127.0.0.1,localhost,::1
+# Optional stable 32+ character token; otherwise read the generated URL from the service log.
+# Environment=SPECTRUMBENCH_SESSION_TOKEN=replace-with-random-value
 ExecStart=/opt/spectrumbench/.venv/bin/python /opt/spectrumbench/token_stress_test.py --no-browser
 Restart=on-failure
 RestartSec=5

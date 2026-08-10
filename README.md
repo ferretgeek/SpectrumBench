@@ -33,7 +33,7 @@ SpectrumBench 是一个本地优先的 Responses API 测速与额度观察台。
 
 ### 隐私与安全
 
-API Key 和 Base URL 只在当前浏览器会话与服务进程内存中使用，不写入草稿、历史、报告或运行日志。服务默认仅监听 `127.0.0.1`；WebSocket 要求同源；远程上游必须使用 HTTPS；包含账号、查询参数或片段的接口地址会被拒绝。
+API Key 和 Base URL 只在当前浏览器会话与服务进程内存中使用，不写入草稿、历史、报告或运行日志；模型输出正文也不进入预览、历史或报告。服务默认仅监听 `127.0.0.1`；WebSocket 同时要求同源和启动器生成的本机会话令牌；远程上游必须使用 HTTPS；包含账号、查询参数或片段的接口地址会被拒绝。
 
 这个工具会按你的操作向上游 API 发起真实请求，可能产生费用。自动化测试、Demo 和项目截图不调用真实模型。请先阅读[隐私说明](PRIVACY.md)与[测量方法](docs/测量方法.md)。
 
@@ -94,7 +94,7 @@ SpectrumBench is a local-first Responses API speed and token-usage workbench. In
 
 ### Privacy and security
 
-The API key and Base URL exist only in the current browser session and service-process memory. They are never written to drafts, history, reports, or runtime logs. The service binds to `127.0.0.1` by default, WebSockets are same-origin, remote upstreams must use HTTPS, and endpoint URLs containing identity, query, or fragment data are rejected.
+The API key and Base URL exist only in the current browser session and service-process memory. They are never written to drafts, history, reports, or runtime logs; model output bodies are also omitted from previews, history, and reports. The service binds to `127.0.0.1` by default, WebSockets require both same-origin and a launcher-generated local session token, remote upstreams must use HTTPS, and endpoint URLs containing identity, query, or fragment data are rejected.
 
 The tool sends real API requests only when you start a run, which may incur charges. Automated tests, the demo, and project screenshots never call a live model. Read the [privacy note](PRIVACY.md) and [measurement method](docs/测量方法.md) first.
 

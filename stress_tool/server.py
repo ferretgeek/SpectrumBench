@@ -8,6 +8,7 @@ import inspect
 import ipaddress
 import json
 import os
+import re
 import secrets
 import time
 from collections import deque
@@ -100,6 +101,10 @@ ALLOWED_HOSTS = [
     ).split(",")
     if host.strip()
 ]
+_CONFIGURED_SESSION_TOKEN = os.getenv("SPECTRUMBENCH_SESSION_TOKEN", "").strip()
+if _CONFIGURED_SESSION_TOKEN and len(_CONFIGURED_SESSION_TOKEN) < 32:
+    raise ValueError("SPECTRUMBENCH_SESSION_TOKEN must contain at least 32 characters")
+SESSION_TOKEN = _CONFIGURED_SESSION_TOKEN or secrets.token_urlsafe(32)
 
 
 @asynccontextmanager
@@ -241,10 +246,10 @@ async def download_report(report_id: str):
 
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
-    if not _websocket_origin_allowed(ws):
-        await ws.close(code=1008, reason="Origin not allowed")
+    if not _websocket_origin_allowed(ws) or not _websocket_session_allowed(ws):
+        await ws.close(code=1008, reason="WebSocket access denied")
         return
-    await ws.accept()
+    await ws.accept(subprotocol="spectrumbench")
     connected_clients.add(ws)
     # Send initial state
     try:
@@ -271,7 +276,7 @@ async def websocket_endpoint(ws: WebSocket):
                 ensure_ascii=False,
             )
         )
-        if engine and engine.is_running:
+        if (engine and engine.is_running) or (_engine_task is not None and not _engine_task.done()):
             await _send_to(ws, "stats", engine.get_stats_snapshot())
             await _send_to(ws, "status", _current_status_payload(engine))
         broadcast_health = _broadcast_health_payload()
@@ -302,7 +307,7 @@ async def _handle_message(ws: WebSocket, msg: dict) -> None:
     msg_type = msg.get("type", "")
 
     if msg_type == "start":
-        if engine and engine.is_running:
+        if (engine and engine.is_running) or (_engine_task is not None and not _engine_task.done()):
             await _send_to(
                 ws,
                 "error",
@@ -586,6 +591,16 @@ def _websocket_origin_allowed(ws: WebSocket) -> bool:
     return parsed.scheme in {"http", "https"} and parsed.netloc.lower() == host
 
 
+def _websocket_session_allowed(ws: WebSocket) -> bool:
+    offered = {
+        item.strip()
+        for item in (ws.headers.get("sec-websocket-protocol") or "").split(",")
+        if item.strip()
+    }
+    supplied = next((item[8:] for item in offered if item.startswith("session.")), "")
+    return "spectrumbench" in offered and secrets.compare_digest(supplied, SESSION_TOKEN)
+
+
 def _read_int_field(
     value: Any,
     field_name: str,
@@ -662,6 +677,13 @@ def _sanitize_history_entry(entry: dict[str, Any] | None) -> dict[str, Any] | No
         if isinstance(raw_config, dict)
         else {}
     )
+    raw_previews = cleaned.get("round_previews")
+    if isinstance(raw_previews, list):
+        cleaned["round_previews"] = [
+            {key: value for key, value in item.items() if key != "preview"}
+            for item in raw_previews
+            if isinstance(item, dict)
+        ]
     return cleaned
 
 
@@ -762,7 +784,10 @@ def _capture_engine_result(
         return None
     return {
         "stats": current_engine.get_stats_snapshot(),
-        "rounds": current_engine.get_records(),
+        "rounds": [
+            {key: value for key, value in record.items() if key != "preview"}
+            for record in current_engine.get_records()
+        ],
         "meta": current_engine.get_report_meta(),
         "config": _config_to_frontend_payload(current_config) if current_config else None,
     }
@@ -824,7 +849,6 @@ def _build_history_entry(
                 {
                     "round_index": item.get("round_index"),
                     "worker_id": item.get("worker_id"),
-                    "preview": item.get("preview", ""),
                     "total_tokens": item.get("total_tokens", 0),
                     "visible_tokens_per_second": item.get("visible_tokens_per_second", 0),
                     "end_to_end_visible_tokens_per_second": item.get("end_to_end_visible_tokens_per_second", 0),
@@ -996,7 +1020,12 @@ def _mirror_event_to_runtime_log(event_type: str, data: Any) -> None:
     if not entries:
         return
     stamp = datetime.now().isoformat(timespec="seconds")
-    lines = [f"[{stamp}] [{level}] {message}\n" for level, message in entries if message]
+    lines = []
+    for level, message in entries:
+        if not message:
+            continue
+        clean_message = re.sub(r"[\x00-\x1f\x7f-\x9f]+", " ", str(message))[:800]
+        lines.append(f"[{stamp}] [{level}] {clean_message}\n")
     if not lines:
         return
     with suppress(Exception):

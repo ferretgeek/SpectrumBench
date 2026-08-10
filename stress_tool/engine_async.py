@@ -39,7 +39,6 @@ from stress_tool.prompts import (
     prompt_cache_key,
 )
 
-PREVIEW_CHAR_LIMIT = 220
 REQUEST_TIMEOUT_SECONDS = 120.0
 STREAM_IDLE_TIMEOUT_SECONDS = 45.0
 RATE_LIMIT_KEYWORDS = ("rate_limit", "rate limit", "429", "too many")
@@ -1373,10 +1372,8 @@ class BenchmarkEngine:
 
     @staticmethod
     def _preview(content: str) -> str:
-        one_line = content.replace("\n", " ")
-        if len(one_line) <= PREVIEW_CHAR_LIMIT:
-            return one_line
-        return f"{one_line[:PREVIEW_CHAR_LIMIT]}... (共 {len(one_line)} 字符)"
+        del content
+        return ""
 
     def _append_record(self, record: dict[str, Any]) -> None:
         if len(self._records) == self._records.maxlen:
@@ -1528,41 +1525,17 @@ class BenchmarkEngine:
         *,
         sensitive_values: tuple[str, ...] | list[str] = (),
     ) -> str:
-        parts: list[str] = []
-        message = str(error).strip()
-        if message:
-            parts.append(message)
+        del sensitive_values
+        parts = ["upstream request failed"]
         class_name = error.__class__.__name__.strip()
-        if class_name and class_name.lower() not in message.lower():
+        if class_name:
             parts.append(class_name)
         status_code = getattr(error, "status_code", None)
         if status_code is None:
             status_code = getattr(getattr(error, "response", None), "status_code", None)
         if status_code is not None:
             parts.append(f"status={status_code}")
-        body = getattr(error, "body", None)
-        if body:
-            body_text = body if isinstance(body, str) else repr(body)
-            if body_text:
-                parts.append(body_text)
-        text = " | ".join(part for part in parts if part).strip()
-        text = re.sub(r"\bsk-[A-Za-z0-9_-]+", "<redacted-key>", text)
-        text = re.sub(r"(?i)\bBearer\s+[A-Za-z0-9._~+/-]+=*", "Bearer <redacted>", text)
-        text = re.sub(r"\bproj_[A-Za-z0-9]+", "<redacted-project>", text)
-        text = re.sub(r"(?i)(https?://)[^/\s:@]+:[^@\s/]+@", r"\1<redacted>@", text)
-        text = re.sub(
-            r"(?i)([?&](?:api[_-]?key|access[_-]?token|token|key)=)[^&#\s]+",
-            r"\1<redacted>",
-            text,
-        )
-        for sensitive in sorted(
-            {str(value).strip() for value in sensitive_values if str(value).strip()},
-            key=len,
-            reverse=True,
-        ):
-            if len(sensitive) >= 4:
-                text = re.sub(re.escape(sensitive), "<redacted-value>", text, flags=re.IGNORECASE)
-        return text
+        return " | ".join(parts)
 
     @classmethod
     def _classify_exception(
@@ -1572,7 +1545,11 @@ class BenchmarkEngine:
         sensitive_values: tuple[str, ...] | list[str] = (),
     ) -> tuple[str, str, bool]:
         error_detail = cls._exception_text(error, sensitive_values=sensitive_values)
-        error_msg = error_detail.lower()
+        raw_parts = [str(error)]
+        body = getattr(error, "body", None)
+        if body:
+            raw_parts.append(body if isinstance(body, str) else repr(body))
+        error_msg = " ".join(raw_parts).lower()
         error_class = error.__class__.__name__.lower()
         status_code = getattr(error, "status_code", None)
         if status_code is None:

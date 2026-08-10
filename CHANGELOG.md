@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 修复本机会话认证、并发启动预留、输出正文持久化、上游错误日志注入与 Pages Action 可变标签五项安全问题。
+- Fixed five security findings covering local session authentication, atomic run reservation, output-body persistence, upstream error log injection, and immutable Pages Action pins.
 - 将 Starlette 测试客户端依赖从 `httpx2 2.9.1` 更新到 `2.10.0`，保持测试路径使用受维护的 HTTPX2 实现并消除回退到旧 `httpx` 时的弃用告警。
 - Updated the Starlette test-client dependency from `httpx2 2.9.1` to `2.10.0`, keeping tests on the maintained HTTPX2 path and avoiding the deprecation warning produced by an old-HTTPX fallback environment.
 
