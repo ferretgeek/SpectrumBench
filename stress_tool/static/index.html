@@ -8,7 +8,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="shortcut icon" href="/favicon.ico">
-  <title>SpectrumBench · 光谱测速台</title>
+  <title>大模型接口测速台</title>
   <style>
     :root {
       color-scheme: light;
@@ -1401,7 +1401,7 @@
         </div>
         <div class="brand-copy">
           <div class="brand-kicker">SPECTRUMBENCH · 03</div>
-          <h1>光谱测速台</h1>
+          <h1>大模型接口测速台</h1>
           <p>固定口径的本地 Responses API 测量系统</p>
         </div>
       </div>
@@ -1466,7 +1466,7 @@
         <section class="setup-panel" aria-labelledby="controlTitle">
           <header class="setup-head">
             <div class="section-kicker">建立测量 / 01—02</div>
-            <h2 id="controlTitle">发起一组可信样本</h2>
+            <h2 id="controlTitle">发起一组可复现的测量</h2>
             <p>选择固定场景，确认接口与样本规模；其余条件由程序自动锁定。</p>
             <a class="mobile-jump" href="#dashboardTitle">跳到实时结果<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14m0 0 5-5m-5 5-5-5"/></svg></a>
           </header>
@@ -1505,7 +1505,7 @@
       <main class="main">
         <section class="results-board" aria-labelledby="dashboardTitle">
           <header class="results-header">
-            <div class="results-copy"><div class="section-kicker">实时读数 / 核心结论</div><h2 id="dashboardTitle">速度先行，额度随后</h2><p>主结论采用正式样本中位数；预热计入额度，但不会进入速度分布。</p></div>
+            <div class="results-copy"><div class="section-kicker">实时读数 / 核心结论</div><h2 id="dashboardTitle">速度与额度分开看</h2><p>主结论采用正式样本中位数；预热计入额度，但不会进入速度分布。</p></div>
             <p class="results-note">可见文本速度反映客户端收到正文的节奏，不等同于服务端内部逐 token TPS。</p>
           </header>
           <div class="snapshot-notice" id="snapshotNotice" hidden><span id="snapshotText">正在查看历史完成快照</span><button class="btn btn-ghost btn-sm" id="liveViewBtn" type="button">返回当前结果</button></div>

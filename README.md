@@ -1,43 +1,48 @@
 <div align="center">
 
-![SpectrumBench social preview](docs/images/social-preview.png)
+![大模型接口测速台](docs/images/social-preview.png)
 
-# 光谱测速台 / SpectrumBench — Responses API 测速与用量
+# 大模型接口测速台
 
-把速度、等待与额度，变成可复核的证据。  
-Turn speed, latency, and token usage into evidence you can audit.
+中文 · [English](README_EN.md)
 
-[![CI](https://github.com/ferretgeek/SpectrumBench/actions/workflows/ci.yml/badge.svg)](https://github.com/ferretgeek/SpectrumBench/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/ferretgeek/SpectrumBench/actions/workflows/codeql.yml/badge.svg)](https://github.com/ferretgeek/SpectrumBench/actions/workflows/codeql.yml)
-[![Demo](https://img.shields.io/badge/demo-GitHub%20Pages-5558f7)](https://ferretgeek.github.io/SpectrumBench/)
-[![Release](https://img.shields.io/github/v/release/ferretgeek/SpectrumBench)](https://github.com/ferretgeek/SpectrumBench/releases)
-[![License](https://img.shields.io/github/license/ferretgeek/SpectrumBench)](LICENSE)
+[![CI](https://github.com/ferretgeek/llm-api-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/ferretgeek/llm-api-benchmark/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ferretgeek/llm-api-benchmark/actions/workflows/codeql.yml/badge.svg)](https://github.com/ferretgeek/llm-api-benchmark/actions/workflows/codeql.yml)
+[![在线演示](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E6%BC%94%E7%A4%BA-GitHub%20Pages-5558f7)](https://ferretgeek.github.io/llm-api-benchmark/)
+[![Release](https://img.shields.io/github/v/release/ferretgeek/llm-api-benchmark?label=%E7%89%88%E6%9C%AC)](https://github.com/ferretgeek/llm-api-benchmark/releases)
+[![License](https://img.shields.io/github/license/ferretgeek/llm-api-benchmark?label=%E8%AE%B8%E5%8F%AF)](LICENSE)
 
-[简体中文](#简体中文) · [English](#english) · [在线预览](https://ferretgeek.github.io/SpectrumBench/) · [部署指南](docs/部署指南.md) · [测量方法](docs/测量方法.md)
+[在线演示](https://ferretgeek.github.io/llm-api-benchmark/) · [部署指南](docs/部署指南.md) · [测量方法](docs/测量方法.md)
 
 </div>
 
-![SpectrumBench dashboard](docs/images/dashboard.png)
+![面板界面](docs/images/dashboard.png)
 
-## 简体中文
+> 同一个模型接口，首字要等多久、每秒吐多少字、缓存命中多少、这一次到底花了多少钱。
 
-SpectrumBench 是一个本地优先的 Responses API 测速与额度观察台。它不追逐偶然峰值，而是锁定场景、推理、预热和缓存规则，以完整 `usage` 为准，分别呈现可见输出速度、端到端速度、首字延迟、缓存与 API 等效成本。
+## 为什么会需要它
 
-### 你会得到什么
+选模型或选中转的时候，你会看到很多"实测 200 tok/s"。这个数字通常没什么意义，因为它没说：
 
-- 三种固定单流场景：无缓存极限、日常连续对话、Codex 高缓存；不会把并发吞吐伪装成单请求速度。
-- 实时看板、质量门禁、逐请求明细、历史可比性判断和一次性 JSON 报告。
-- 完整 usage 与中断估算严格分开；预热会计入额度，但不进入正式速度分布。
-- 鸢尾、青玉、晨曦三套浅色配色，以及背景精确为 `#17191d` 的全局暗色主题。
-- Windows 一键脚本、本地 Python、Docker Compose 和 Linux systemd + SSH 隧道部署。
+- 是不是并发跑出来的？（把吞吐当成单请求速度是最常见的作弊）
+- 有没有算预热那一轮？
+- 提示词缓存命中了多少？（高缓存场景下速度会好看很多）
+- 首字等了多久？（对交互体验来说，这一项往往比吐字速度更重要）
+- 推理档位是什么？
 
-### 隐私与安全
+这个工具的做法是：**先把场景、推理档位、预热策略和缓存规则锁定，再以完整的 `usage` 为准**，把可见输出速度、端到端速度、首字延迟、缓存命中和 API 等效成本分开呈现。
 
-API Key 和 Base URL 只在当前浏览器会话与服务进程内存中使用，不写入草稿、历史、报告或运行日志；模型输出正文也不进入预览、历史或报告。服务默认仅监听 `127.0.0.1`；WebSocket 同时要求同源和启动器生成的本机会话令牌；远程上游必须使用 HTTPS；包含账号、查询参数或片段的接口地址会被拒绝。
+它不追偶然峰值——**它追一个你下次能复现的数字。**
 
-这个工具会按你的操作向上游 API 发起真实请求，可能产生费用。自动化测试、Demo 和项目截图不调用真实模型。请先阅读[隐私说明](PRIVACY.md)与[测量方法](docs/测量方法.md)。
+## 你会得到什么
 
-### 本地启动
+- **三种锁定的单流场景** — 无缓存极限、日常连续对话、Codex 高缓存。**不会把并发吞吐伪装成单请求速度。**
+- **看得见过程** — 实时看板、质量门禁、逐请求明细、历史可比性判断，以及一次性 JSON 报告。
+- **口径分得清** — 完整 usage 与中断估算严格分开；**预热会计入额度，但不进入正式速度分布。**
+- **四套主题** — 鸢尾、青玉、晨曦三套浅色配色，以及背景精确为 `#17191d` 的全局暗色主题。
+- **哪都能跑** — Windows 一键脚本、本地 Python、Docker Compose，以及 Linux systemd + SSH 隧道。
+
+## 本地启动
 
 需要 Python 3.10 或更高版本。
 
@@ -47,9 +52,11 @@ python -m venv .venv
 .\.venv\Scripts\python token_stress_test.py
 ```
 
-Windows 也可以在安装依赖后双击 `一键启动.bat`；`一键结束服务.bat` 会先验证端口上的服务确实是 SpectrumBench，避免误结束其他程序。默认访问 [http://127.0.0.1:18976](http://127.0.0.1:18976)。
+Windows 也可以在装完依赖后双击 `一键启动.bat`。`一键结束服务.bat` 会先确认端口上的服务确实是本程序，**避免误杀你的其他进程**。
 
-### Docker 与服务器
+默认访问 [http://127.0.0.1:18976](http://127.0.0.1:18976)。
+
+## Docker 与服务器
 
 ```powershell
 Copy-Item .env.docker.example .env
@@ -62,72 +69,11 @@ Compose 只把端口映射到宿主机回环地址。远程服务器请通过 SS
 ssh -L 18976:127.0.0.1:18976 user@example.com
 ```
 
-完整的 Docker、systemd、升级和备份步骤见[部署指南](docs/部署指南.md)。不要把含 API Key 的面板直接暴露到公网。
+完整的 Docker、systemd、升级与备份步骤见[部署指南](docs/部署指南.md)。**不要把含 API Key 的面板直接暴露到公网。**
 
-### 多端点命令行对比
+## 多端点命令行对比
 
-为每个端点建立一个不会提交的 `*.local.txt`，依次写入 HTTPS 接口地址、API Key、模型名称三行，然后显式传入：
-
-```powershell
-.\.venv\Scripts\python benchmark_token_speed.py `
-  --configs endpoint-a.local.txt endpoint-b.local.txt `
-  --mode daily-dialogue --samples 6 --warmups 1
-```
-
-程序不会自动寻找凭据文件。结果只记录配置文件名、模型和测量数据，不记录 Key 或 Base URL。
-
-### 定价边界
-
-仓库内置的是标准服务层、输入不超过 272K token 的静态 API 等效价格快照，用于统一换算，不代表套餐账单。超长上下文、Batch、Flex、Priority 和区域处理不套用这张表；真实价格以 [OpenAI 官方定价](https://developers.openai.com/api/docs/pricing)为准。
-
-## English
-
-SpectrumBench is a local-first Responses API speed and token-usage workbench. Instead of celebrating a lucky peak, it locks the scenario, reasoning level, warm-up policy, and cache rules, then uses complete `usage` data to separate visible output speed, end-to-end speed, time to first token, caching, and API-equivalent cost.
-
-### What you get
-
-- Three locked, single-stream methods: uncached limit, daily conversation, and high-cache Codex. Concurrent throughput is never presented as single-request speed.
-- A live dashboard, quality gates, per-request details, history comparability checks, and one-time JSON reports.
-- Complete usage and interrupted estimates stay separate; warm-ups count toward usage but never enter the formal speed distribution.
-- Iris, Jade, and Sunrise light palettes plus a global dark theme whose background is exactly `#17191d`.
-- Windows launchers, local Python, Docker Compose, and Linux systemd + SSH tunnel deployment.
-
-### Privacy and security
-
-The API key and Base URL exist only in the current browser session and service-process memory. They are never written to drafts, history, reports, or runtime logs; model output bodies are also omitted from previews, history, and reports. The service binds to `127.0.0.1` by default, WebSockets require both same-origin and a launcher-generated local session token, remote upstreams must use HTTPS, and endpoint URLs containing identity, query, or fragment data are rejected.
-
-The tool sends real API requests only when you start a run, which may incur charges. Automated tests, the demo, and project screenshots never call a live model. Read the [privacy note](PRIVACY.md) and [measurement method](docs/测量方法.md) first.
-
-### Run locally
-
-Python 3.10 or newer is required.
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python -m pip install -r requirements.txt
-.\.venv\Scripts\python token_stress_test.py
-```
-
-On Windows, you can also run `一键启动.bat` after installing dependencies. `一键结束服务.bat` verifies that the listener is SpectrumBench before stopping it. Open [http://127.0.0.1:18976](http://127.0.0.1:18976).
-
-### Docker and servers
-
-```powershell
-Copy-Item .env.docker.example .env
-docker compose up --build -d
-```
-
-Compose maps the port to the host loopback interface only. On a remote server, use an SSH tunnel:
-
-```text
-ssh -L 18976:127.0.0.1:18976 user@example.com
-```
-
-See the [deployment guide](docs/部署指南.md) for Docker, systemd, upgrade, and backup steps. Never expose the credential-bearing panel directly to the public internet.
-
-### Multi-endpoint CLI comparison
-
-Create one ignored `*.local.txt` file per endpoint with three lines—HTTPS endpoint, API key, and model—then pass the files explicitly:
+为每个端点建一个**不会提交**的 `*.local.txt`，依次写入 HTTPS 接口地址、API Key、模型名称三行，然后显式传入：
 
 ```powershell
 .\.venv\Scripts\python benchmark_token_speed.py `
@@ -135,21 +81,43 @@ Create one ignored `*.local.txt` file per endpoint with three lines—HTTPS endp
   --mode daily-dialogue --samples 6 --warmups 1
 ```
 
-The program never auto-discovers credential files. Results contain configuration filenames, model names, and measurements, but not keys or Base URLs.
+程序**不会自动寻找凭据文件**。结果只记录配置文件名、模型和测量数据，不记录 Key 或 Base URL。
 
-### Pricing boundary
+## 技术上值得一提的地方
 
-The checked-in table is a static API-equivalent snapshot for the standard service tier with up to 272K input tokens. It is a comparison aid, not a subscription bill. Long context, Batch, Flex, Priority, and regional processing are outside this table; verify live rates on the [official OpenAI pricing page](https://developers.openai.com/api/docs/pricing).
+**预热计费但不计分。** 预热请求会真实消耗额度（所以成本里算上了它），但不会进入正式的速度分布——否则第一次冷启动会把整组数据拉低，你得到的就是一个不可复现的数字。这两件事必须分开记。
 
-## Project map / 项目导航
+**完整 usage 与中断估算是两个字段。** 请求正常结束时用上游返回的完整 `usage`；中途中断时给出估算值，并**明确标为估算**。把两者混进一列平均值是这类工具最常见的错误。
 
-| Path | Purpose |
-|---|---|
-| `stress_tool/` | Measurement engine, FastAPI/WebSocket server, persistence allowlists, and dashboard |
-| `token_stress_test.py` | Local/server launcher |
-| `benchmark_token_speed.py` | Counterbalanced multi-endpoint CLI comparison |
-| `pricing_table.json` | Auditable static API-equivalent pricing snapshot |
-| `tests/` | Measurement, engine, privacy, URL, report, and server-security tests |
-| `docs/` | Deployment, methodology, preview assets, and publication audit |
+**WebSocket 要求同源 + 本机会话令牌。** 令牌由启动器生成。仅靠同源检查不够——一个本机端口在多用户机器上是所有用户都能访问的。
 
-MIT © ferretgeek
+**端点地址会被校验。** 远程上游强制 HTTPS；**包含账号信息、查询参数或 fragment 的接口地址会被拒绝**，避免凭据经由 URL 泄露到日志里。
+
+**定价表的边界写清楚了。** 仓库内置的是「标准服务层、输入不超过 272K token」的静态 API 等效价格快照，只用于统一换算，**不代表你的套餐账单**。超长上下文、Batch、Flex、Priority 和区域处理都不套用这张表；真实价格以 [OpenAI 官方定价](https://developers.openai.com/api/docs/pricing)为准。
+
+**测试和截图不打真接口。** 自动化测试、Demo 和项目截图都不会调用真实模型——所以 CI 不烧钱，截图也不含真实响应。
+
+## 隐私与安全
+
+API Key 和 Base URL 只在当前浏览器会话与服务进程内存中使用，**不写入草稿、历史、报告或运行日志**；模型输出正文也不进入预览、历史或报告。
+
+服务默认只监听 `127.0.0.1`。
+
+> **这个工具会按你的操作向上游 API 发起真实请求，可能产生费用。** 请先阅读[隐私说明](PRIVACY.md)与[测量方法](docs/测量方法.md)。
+
+## 它不做什么
+
+- 不做并发压测排行榜（那会让单请求速度失去意义）。
+- 不代理、不缓存、不改写你的模型请求内容。
+- 不保存 API Key、Base URL 或模型输出正文。
+- 不提供模型、额度或任何形式的接口服务。
+
+## 更多文档
+
+[部署指南](docs/部署指南.md) · [测量方法](docs/测量方法.md) · [隐私说明](PRIVACY.md) · [发布审计](docs/发布审计.md) · [版本变更](CHANGELOG.md) · [参与开发](CONTRIBUTING.md) · [安全策略](SECURITY.md) · [第三方声明](THIRD_PARTY_NOTICES.md)
+
+## 许可与声明
+
+见 [LICENSE](LICENSE)。
+
+这是独立的社区项目，与 OpenAI 没有隶属、授权或背书关系，也不绕过任何额度限制。

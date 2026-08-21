@@ -47,7 +47,7 @@ def _wait_and_open(server: Any, host: str, port: int, open_browser: bool) -> Non
             from stress_tool.server import SESSION_TOKEN
 
             access_url = f"http://{access_host}:{port}/#session={quote(SESSION_TOKEN, safe='')}"
-            print("\n  SpectrumBench · 光谱测速台已启动")
+            print("\n  大模型接口测速台已启动")
             print(f"  访问地址（含本次会话令牌，请勿转发）: {access_url}\n")
             if open_browser:
                 webbrowser.open(access_url)
@@ -56,7 +56,7 @@ def _wait_and_open(server: Any, host: str, port: int, open_browser: bool) -> Non
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="启动 SpectrumBench · 光谱测速台")
+    parser = argparse.ArgumentParser(description="启动大模型接口测速台")
     parser.add_argument(
         "--host",
         choices=("127.0.0.1", "0.0.0.0"),

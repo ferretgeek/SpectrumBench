@@ -6,7 +6,7 @@ Security fixes are applied to the latest release and the `main` branch.
 
 ## Report a vulnerability
 
-Please use [GitHub private vulnerability reporting](https://github.com/ferretgeek/SpectrumBench/security/advisories/new). Do not open a public issue containing a secret, private endpoint, exploit detail, or personal data.
+Please use [GitHub private vulnerability reporting](https://github.com/ferretgeek/llm-api-benchmark/security/advisories/new). Do not open a public issue containing a secret, private endpoint, exploit detail, or personal data.
 
 Include the affected version, a minimal reproduction, impact, and any suggested mitigation. Remove real credentials and use reserved example domains in evidence.
 

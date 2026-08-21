@@ -1,6 +1,6 @@
 # Third-party notices
 
-SpectrumBench is distributed under the MIT License. Runtime dependencies remain under their respective licenses:
+This project is distributed under the MIT License. Runtime dependencies remain under their respective licenses:
 
 - FastAPI — MIT
 - Uvicorn — BSD-3-Clause
